@@ -108,6 +108,7 @@ public class MpUserServiceImplTest {
 
     @Test
     public void updateByParam(){
-
+        UpdateWrapper<MpUser> wrapper = new UpdateWrapper<>();
+        //wrapper.and()
     }
 }
