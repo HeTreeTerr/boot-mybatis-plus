@@ -85,9 +85,21 @@ public class MpUserController {
                 return Msg.success().add("flag",update);
             }catch (Exception e){
                 logger.info("修改用户openid信息出错:"+e.getStackTrace());
+                return Msg.fail();
             }
         }
-        return Msg.success();
+    }
+
+    @RequestMapping(value = "/selectById")
+    public Msg selectById(@RequestParam(value = "id",required = true) Long id){
+        try{
+            logger.info("查询用户信息by id");
+            MpUser mpUser = mpUserService.getById(id);
+            return Msg.success().add("data",mpUser);
+        }catch (Exception e){
+            logger.error("查询用户信息出错");
+            return Msg.fail();
+        }
     }
 
     //MpUser 参数效验

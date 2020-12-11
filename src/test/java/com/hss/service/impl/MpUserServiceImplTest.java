@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
@@ -71,7 +72,7 @@ public class MpUserServiceImplTest {
          * 如果不传主键字段，执行新增操作（主键自增）
          * 如果传主键字段，先检查库中是否存在记录
          *   有则是修改
-         *   无则是新增（主键值赋传的值）
+         *   无则是新增（数据库设置主键自增时遵循自增规则）
          * 非主键字段，如果传值不为空才会入库。
          *   传值为空或不传则不会操作该字段
          */
@@ -109,6 +110,16 @@ public class MpUserServiceImplTest {
     @Test
     public void updateByParam(){
         UpdateWrapper<MpUser> wrapper = new UpdateWrapper<>();
-        //wrapper.and()
+        //条件 jdk1.8
+        //wrapper.and(wrapper1 ->wrapper1.eq("openid","").or().isNull("openid"));
+        //条件 jdk1.6写法
+        wrapper.and(new Function<UpdateWrapper<MpUser>, UpdateWrapper<MpUser>>() {
+            @Override
+            public UpdateWrapper<MpUser> apply(UpdateWrapper<MpUser> mpUserUpdateWrapper) {
+                return mpUserUpdateWrapper.eq("openid","").or().isNull("openid");
+            }
+        });
+        wrapper.set("address","我是地址");
+        mpUserService.update(wrapper);
     }
 }
