@@ -3,6 +3,7 @@ package com.hss.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hss.domain.MpUser;
 import org.junit.Test;
@@ -54,12 +55,16 @@ public class MpUserMapperTest {
 
     @Test
     public void update1(){
-//        MpUser mpUser = new MpUser();
-//        mpUser.setAddress("我是地址2");
+        MpUser mpUser = new MpUser();
+        mpUser.setAddress("我是地址2");
 
-        UpdateWrapper<MpUser> updateWrapper = new UpdateWrapper<>();
+        /*UpdateWrapper<MpUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id","2").set("address","我是地址2");
-        mpUserMapper.update(null,updateWrapper);
+        mpUserMapper.update(null,updateWrapper);*/
+
+        Integer update = mpUserMapper.update(mpUser,
+                Wrappers.<MpUser>update().lambda().eq(MpUser::getUsername, "批量二"));
+        logger.info("update={}",update);
     }
 
     @Test
