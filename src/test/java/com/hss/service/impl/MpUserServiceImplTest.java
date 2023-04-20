@@ -1,8 +1,8 @@
 package com.hss.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hss.domain.MpUser;
 import com.hss.service.MpUserService;
 import org.junit.Test;
@@ -14,11 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -121,5 +118,21 @@ public class MpUserServiceImplTest {
         });
         wrapper.set("address","我是地址");
         mpUserService.update(wrapper);
+    }
+
+    @Test
+    public void batchUpdate(){
+        MpUser userWhere = new MpUser();
+        userWhere.setAddress("我是地址");
+
+        boolean update = mpUserService.update(userWhere,
+                Wrappers.<MpUser>update().lambda().eq(MpUser::getUsername, "批量二"));
+        logger.info("update={}",update);
+    }
+
+    @Test
+    public void remove(){
+        boolean remove = mpUserService.remove(Wrappers.<MpUser>query().lambda().eq(MpUser::getId, 3L));
+        logger.info("remove={}",remove);
     }
 }
