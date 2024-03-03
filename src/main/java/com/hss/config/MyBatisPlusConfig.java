@@ -11,11 +11,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
 @Configuration
 @MapperScan("com.hss.mapper")
 public class MyBatisPlusConfig {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Resource
+    private DataSource dataSource;
 
     @Bean
     public PaginationInterceptor paginationInterceptor() {
@@ -37,5 +44,11 @@ public class MyBatisPlusConfig {
     @Bean
     public ISqlInjector sqlInjector() {
         return new LogicSqlInjector();
+    }
+
+    @PostConstruct
+    public void init(){
+        //打印数据源信息
+        logger.info("数据源：" + dataSource.getClass().getName());
     }
 }
