@@ -8,7 +8,10 @@ import com.hss.util.Msg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -91,10 +94,16 @@ public class MpUserController {
     }
 
     @RequestMapping(value = "/selectById")
+    @Transactional(rollbackFor = Exception.class)
     public Msg selectById(@RequestParam(value = "id",required = true) Long id){
         try{
             logger.info("查询用户信息by id");
             MpUser mpUser = mpUserService.getById(id);
+            try {
+                TimeUnit.MINUTES.sleep(3);
+            } catch (InterruptedException e) {
+                logger.error("线程休眠异常！",e);
+            }
             return Msg.success().add("data",mpUser);
         }catch (Exception e){
             logger.error("查询用户信息出错");
