@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface MpUserService extends IService<MpUser> {
 
+    MpUser getById(Long id);
+
+    void transactionVerification();
 }

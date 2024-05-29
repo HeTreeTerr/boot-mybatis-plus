@@ -12,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 @RunWith(SpringRunner.class)
@@ -134,5 +136,10 @@ public class MpUserServiceImplTest {
     public void remove(){
         boolean remove = mpUserService.remove(Wrappers.<MpUser>query().lambda().eq(MpUser::getId, 3L));
         logger.info("remove={}",remove);
+    }
+
+    @Test
+    public void transactionVerification(){
+        mpUserService.transactionVerification();
     }
 }
