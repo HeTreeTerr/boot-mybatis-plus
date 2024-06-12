@@ -38,9 +38,17 @@ public class MpUser extends Model<MpUser> {
 
     private LocalDateTime gmtModified;
 
-    @TableLogic
+    //@TableLogic
     private Integer deleted;
 
+    public MpUser() {
+    }
+
+    public MpUser(String username, String address, String openid) {
+        this.username = username;
+        this.address = address;
+        this.openid = openid;
+    }
 
     @Override
     protected Serializable pkVal() {

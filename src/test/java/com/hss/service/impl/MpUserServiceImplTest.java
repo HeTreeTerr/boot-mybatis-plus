@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hss.domain.MpUser;
 import com.hss.service.MpUserService;
+import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -12,11 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @RunWith(SpringRunner.class)
@@ -142,4 +144,40 @@ public class MpUserServiceImplTest {
     public void transactionVerification(){
         mpUserService.transactionVerification();
     }
+
+    /**
+     * 验证并发下，数据库的事务一致性
+     */
+    @SneakyThrows
+    @Test
+    public void jucVerification(){
+        //创建一个可重用固定个数的线程池
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
+
+        for (int i = 0; i < 2; i++) {
+            fixedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mpUserService.transactionVerification();
+                    } catch (Exception e) {
+                        logger.error("操作失败",e);
+                    }
+                }
+            });
+        }
+        TimeUnit.SECONDS.sleep(60);
+        fixedThreadPool.shutdown();
+    }
+
+    /*
+    mysql5.7 查询缓存配置
+    -- 查看配置是否启用
+    SHOW VARIABLES LIKE 'query_cache%';
+
+    my.cnf配置中
+    [mysqld]
+    #查询缓存
+    query_cache_type=1
+     */
 }

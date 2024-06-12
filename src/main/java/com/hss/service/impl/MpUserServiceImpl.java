@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <p>
@@ -38,20 +39,25 @@ public class MpUserServiceImpl extends ServiceImpl<MpUserMapper, MpUser> impleme
 
     @Override
     public void transactionVerification() {
+        MpUser mpUserParam = new MpUser("hss","hss","4396");
+
         //1、删除
         Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
-                .eq(MpUser::getUsername, "hpp2")
-                .eq(MpUser::getAddress, "我是地址2"));
+                .eq(MpUser::getUsername, mpUserParam.getUsername())
+                .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
         logger.info("remove={}",remove);
         //2、查询
         MpUser mpUser = mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
-                .eq(MpUser::getUsername, "hpp2")
-                .eq(MpUser::getOpenid, "我是地址2"));
+                .eq(MpUser::getAddress, mpUserParam.getAddress())
+                .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
         logger.info("mpUser={}",mpUser);
         if(Objects.isNull(mpUser)){
             logger.info("======新增");
+            mpUserMapper.insert(mpUserParam);
         }else {
-            logger.info("======修改");
+            logger.info("=====================修改");
+            mpUserParam.setId(mpUser.getId());
+            mpUserMapper.updateById(mpUserParam);
         }
     }
 }
