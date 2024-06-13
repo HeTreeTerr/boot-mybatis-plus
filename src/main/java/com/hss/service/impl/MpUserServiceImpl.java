@@ -40,7 +40,10 @@ public class MpUserServiceImpl extends ServiceImpl<MpUserMapper, MpUser> impleme
     @Override
     public void transactionVerification() {
         MpUser mpUserParam = new MpUser("hss","hss","4396");
-
+        //生成readview
+        mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
+                .eq(MpUser::getAddress, mpUserParam.getAddress())
+                .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
         //1、删除
         Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
                 .eq(MpUser::getUsername, mpUserParam.getUsername())

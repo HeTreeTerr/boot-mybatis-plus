@@ -32,13 +32,15 @@ public class MpUserServiceImplTest {
 
     @Test
     public void save(){
-        MpUser mpUser = new MpUser();
-        mpUser.setUsername("hpp");
-        mpUser.setAddress("我是地址");
-        mpUser.setOpenid(null);
-        boolean flag = mpUserService.save(mpUser);
+        for (int i = 0; i < 1000; i++) {
+            MpUser mpUser = new MpUser();
+            mpUser.setUsername("hpp" + i);
+            mpUser.setAddress("我是地址" + i);
+            mpUser.setOpenid(null);
+            mpUserService.save(mpUser);
+        }
         //保存
-        logger.info("flag="+flag);
+        logger.info("success");
     }
 
     @Test
@@ -154,7 +156,7 @@ public class MpUserServiceImplTest {
         //创建一个可重用固定个数的线程池
         ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 100; i++) {
             fixedThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
