@@ -39,17 +39,26 @@ public class MpUserServiceImpl extends ServiceImpl<MpUserMapper, MpUser> impleme
 
     @Override
     public void transactionVerification() {
+        /*
+        注意：mpUserParam对象中username和address字段值相等
+         */
         MpUser mpUserParam = new MpUser("hss","hss","4396");
         //生成readview
-        mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
+        MpUser mpUserOld = mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
                 .eq(MpUser::getAddress, mpUserParam.getAddress())
                 .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
+        logger.info("mpUserOld={}",mpUserOld);
         //1、删除
-        Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
+        //查询和删除，字段不对齐会触发修改
+        /*Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
                 .eq(MpUser::getUsername, mpUserParam.getUsername())
+                .eq(MpUser::getOpenid, mpUserParam.getOpenid()));*/
+        //查询和删除，字段对齐会触发修改
+        Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
+                .eq(MpUser::getAddress, mpUserParam.getAddress())
                 .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
         logger.info("remove={}",remove);
-        //2、查询
+        //2、查询（关键点在于，可重复度的隔离级别下，是否识别到删除触发readview的重新生成）
         MpUser mpUser = mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
                 .eq(MpUser::getAddress, mpUserParam.getAddress())
                 .eq(MpUser::getOpenid, mpUserParam.getOpenid()));
