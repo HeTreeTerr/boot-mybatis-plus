@@ -142,6 +142,7 @@ public class MpUserServiceImplTest {
         logger.info("remove={}",remove);
     }
 
+    //==================================
     @Test
     public void transactionVerification(){
         mpUserService.transactionVerification();
@@ -181,5 +182,9 @@ public class MpUserServiceImplTest {
     [mysqld]
     #查询缓存
     query_cache_type=1
+
+    解决方案：
+    1、按照阿里规范，讲mysql隔离级别调整成读提交
+    2、使用分布式锁，防止并发事务发生
      */
 }
