@@ -87,11 +87,15 @@ public class MpUserServiceImplTest {
 
     @Test
     public void countByParam(){
-        QueryWrapper<MpUser> wrapper = new QueryWrapper<>();
+        /*QueryWrapper<MpUser> wrapper = new QueryWrapper<>();
         wrapper.eq("openid","openid");
         wrapper.or().isNull("openid");
 
-        int count = mpUserService.count(wrapper);
+        int count = mpUserService.count(wrapper);*/
+
+        int count = mpUserService.count(Wrappers.<MpUser>lambdaQuery()
+                .eq(MpUser::getOpenid, "openid")
+        );
         logger.info("count="+count);
     }
 
@@ -128,13 +132,13 @@ public class MpUserServiceImplTest {
         userWhere.setAddress("我是地址");
 
         boolean update = mpUserService.update(userWhere,
-                Wrappers.<MpUser>update().lambda().eq(MpUser::getUsername, "批量二"));
+                Wrappers.<MpUser>lambdaUpdate().eq(MpUser::getUsername, "批量二"));
         logger.info("update={}",update);
     }
 
     @Test
     public void remove(){
-        boolean remove = mpUserService.remove(Wrappers.<MpUser>query().lambda().eq(MpUser::getId, 3L));
+        boolean remove = mpUserService.remove(Wrappers.<MpUser>lambdaQuery().eq(MpUser::getId, 3L));
         logger.info("remove={}",remove);
     }
 

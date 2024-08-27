@@ -63,7 +63,7 @@ public class MpUserMapperTest {
         mpUserMapper.update(null,updateWrapper);*/
 
         Integer update = mpUserMapper.update(mpUser,
-                Wrappers.<MpUser>update().lambda().eq(MpUser::getUsername, "批量二"));
+                Wrappers.<MpUser>lambdaUpdate().eq(MpUser::getUsername, "批量二"));
         logger.info("update={}",update);
     }
 
@@ -72,7 +72,11 @@ public class MpUserMapperTest {
         // 分页查询
         int pageNum = 1;
         int pageSize = 10;
-        IPage<MpUser> mpUserIPage = mpUserMapper.selectPage(new Page<>(pageNum, pageSize), new QueryWrapper<MpUser>().eq("openid", "openid").orderByDesc("id"));
+        /*IPage<MpUser> mpUserIPage = mpUserMapper.selectPage(new Page<>(pageNum, pageSize),
+                new QueryWrapper<MpUser>().eq("openid", "openid")
+                        .orderByDesc("id"));*/
+        IPage<MpUser> mpUserIPage = mpUserMapper.selectPage(new Page<>(pageNum, pageSize),
+                Wrappers.<MpUser>lambdaQuery().eq(MpUser::getOpenid,"openid").orderByDesc(MpUser::getId));
         logger.info("总记录数："+mpUserIPage.getTotal());
         logger.info("记录信息："+mpUserIPage.getRecords());
     }

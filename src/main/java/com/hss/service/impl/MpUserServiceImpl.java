@@ -39,12 +39,12 @@ public class MpUserServiceImpl extends ServiceImpl<MpUserMapper, MpUser> impleme
     @Override
     public void transactionVerification() {
         //1、删除
-        Integer remove = mpUserMapper.delete(Wrappers.<MpUser>query().lambda()
+        Integer remove = mpUserMapper.delete(Wrappers.<MpUser>lambdaQuery()
                 .eq(MpUser::getUsername, "hpp2")
                 .eq(MpUser::getAddress, "我是地址2"));
         logger.info("remove={}",remove);
         //2、查询
-        MpUser mpUser = mpUserMapper.selectOne(Wrappers.<MpUser>query().lambda()
+        MpUser mpUser = mpUserMapper.selectOne(Wrappers.<MpUser>lambdaQuery()
                 .eq(MpUser::getUsername, "hpp2")
                 .eq(MpUser::getOpenid, "我是地址2"));
         logger.info("mpUser={}",mpUser);
